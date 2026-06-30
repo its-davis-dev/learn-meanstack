@@ -2,9 +2,13 @@
 <section class="page-section" id="provider-list">
     <div class="container px-4 px-lg-5">
         <h2 class="text-center mt-0">At Your Service</h2>
-        <hr class="divider" />
+        <hr class="divider my-4" />
 
-        <div class="table-reponsive">
+        <a href="/providers/add-provider/" class="btn btn-primary btn-sm"> Add New Provider </a>
+
+
+
+        <div class="table-reponsive mt-4">
             <table class="table table-hover table-bordered">
                 <thead class="thead-light">
                     <tr>
@@ -34,11 +38,39 @@
                             </a>
                         </td>
                         <td scope="row">
-                            <a href="providers/edit/{{id}}" class="btn btn-danger btn-sm">
+                            <a href="providers/delete/{{id}}" class="btn btn-danger btn-sm">
                             Delete
                             </a>
                         </td>
                     </tr>
+
+                    
+                    <!-- Modal Window -->
+                    <div id="myModal" class="modal fade">
+                        <div class="modal-dialog modal-confirm">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="icon-box">
+                                <i class="material-icons">&#xESCD</i>
+                                </div>
+
+                                <h4 class="modal-title">Are you sure?</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Do you really want to delete these records? This process cannot be undone.</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-info btn-md" data-dismiss="modal">Cancel</button>
+
+                                <button type="button" class="btn btn-danger">Delete</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {{/each}}
                 </tbody>
             </table>

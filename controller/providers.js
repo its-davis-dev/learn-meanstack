@@ -44,3 +44,54 @@ module.exports.update = function(req, res) {
 
     res.render('providers/providers-update', { id: id, title: 'Update'})
 }
+
+module.exports.addForm = function(req, res) {
+    res.render('providers/providers-add-form', { title: 'Add'} )
+}
+
+// Add Provider.
+module.exports.add = function(req, res) {
+
+    let min = 100000;
+    let max = 999999;
+    let id = Math.floor(Math.random() * (max-min) + min);
+    const {  firstname, lastname, position, company_name, address, address2, city, state, postal_code, phone, email, description, tagline }= req.body;
+
+
+    //Create new provider object    
+    const provider = {
+        id: id,
+        firstname: firstname,
+        lastname: lastname,
+        position: position,
+        company: {
+            company_name: company_name,
+            address: address,
+            address2: address2,
+            city: city,
+            state: state,
+            postal_code: postal_code,
+            phone: phone,
+            email: email,
+            description: description,
+            tagline: tagline,
+        }
+    }
+
+    providers.push(provider);
+
+    res.render('providers/providers-add', { id: id, title: 'Provider Added successfully.'})
+}
+
+module.exports.delete = function(req, res)  {
+    const id = req.params.id;
+    const providerFound = providers.find(provider => provider.id == id);
+    const company = providerFound.company.company_name;
+
+    const idx = providers.indexOf(providerFound);
+
+    // Elimino el elemento en la posicion de idX.
+    providers.splice(idx, 1);
+
+    res.render('providers/providers-delete', { title: 'Delete', company: company})
+}
