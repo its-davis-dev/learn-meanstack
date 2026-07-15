@@ -4,6 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+//TO do [Remove later]
+// const db = require('./api/db/db');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 let providerRouter = require('./routes/providers');
@@ -26,6 +29,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/providers', providerRouter);
 app.use('/api', apiRouter); // La que creamos
+app.use('/*', apiRouter); // Te devuelve a lo que indica el indexRouter.
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

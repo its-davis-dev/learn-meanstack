@@ -1,4 +1,6 @@
 let providers = require('../models/providers.models');
+const Provider = require('../db/db');
+const { ObjectId } = require('mongodb');
  
 
 // Util functions
@@ -7,23 +9,23 @@ function isEmptyList(obj) {
     return (!obj || obj.length == 0 || Object.keys(obj).length == 0 );
 }
 
-// Check for existing provider
-function existsProvider(id) {
-    return providers.find( provider => provider.id == id);
-}
+// Check for existing provider ( Esto se comenta porque ya mongodb lo hará )
+// function existsProvider(id) {
+//     return providers.find( provider => provider.id == id);
+// }
 
-// Generate a unique provider ID
-function getUniquetID(provider) {
-    let min = 100000;
-    let max = 999999;
+// Generate a unique provider ID ( Esto se comenta porque ya mongodb lo hará )
+// function getUniquetID(provider) {
+//     let min = 100000;
+//     let max = 999999;
 
-    // Generate id until doesn't exist in provider list.
-    do {
-        var id = Math.floor(Math.random() * (max-min) + min);
-    } while(existsProvider(id))
+//     // Generate id until doesn't exist in provider list.
+//     do {
+//         var id = Math.floor(Math.random() * (max-min) + min);
+//     } while(existsProvider(id))
 
-    return id;
-}
+//     return id;
+// }
 
 // CRUD - Create (POST), READ (Get), Update (PUT), Delete
 
@@ -50,26 +52,51 @@ module.exports.create = function(req, res) {
     res.send(provider);
 }
 
+// Manejador de errores
+function handlerError(res, error) {
+    res.status(200);
+    res.send('Something went wrong. \n' + error);
+}
+
 //GET ALL
 // url: /api/providers
 module.exports.readAll = function(req, res) {
-    if( isEmptyList(providers) ) {
-        res.status(404);
-        res.send('List is empty.');
+    try{
+        Provider.find()
+            .then( result => {
+                if( isEmptyList(providers) ) {
+                        res.status(404);
+                        res.send('List is empty.');
+                }
+                res.status(200);
+                res.send(result);
+            })
+            .catch( error => handlerError(res, error))
+    }catch(error) {
+        handlerError(res, error);
     }
-    res.status(200);
-    res.send(providers);
 }
 
 //GET ONE
 // url: /api/providers/123
 module.exports.readOne = function(req, res) {
-    const id = req.params.id;
-    const provider = providers.find(provider => provider.id == id);
-    
-    if(provider) {
-        res.status(200);
-        res.send(provider);
+    // const provider = providers.find(provider => provider.id == id);
+    try {
+        let id = new ObjectId(req.params.id);
+
+        Provider.find({'_id': id})
+            .then( result => {    
+                if(isEmptyList(result)) {
+                    res.status(400);
+                    res.send('List is empty. Nothing to read.');
+                }
+
+                res.status(200);
+                res.send(result);
+            })
+            .catch(error => handlerError(res, error))
+    }catch(error) {
+        handlerError(res, error);
     }
 }
 
